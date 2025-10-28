@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shape Area Calculator</title>
+
+    <style>
+        /* Basic styles for the entire page */
+        body {
+            font-family: sans-serif;
+            background-color: #f4f4f4; /* Light grey background */
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* A container to hold all the content */
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: #ffffff; /* White background for the main box */
+            padding: 20px;
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Simple shadow */
+        }
+
+        /* Header styles */
+        header {
+            text-align: center;
+            border-bottom: 1px solid #eeeeee; /* A line to separate header */
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        /* Styles for each calculator section (Triangle, Rectangle, etc.) */
+        .calculator-card {
+            margin-bottom: 25px; /* Space between cards */
+        }
+
+        .calculator-card h3 {
+            text-align: center;
+            margin-top: 0;
+        }
+        
+        /* Styles for input fields, labels, and buttons */
+        input[type="number"] {
+            width: 100%; /* Make inputs take full width of their container */
+            padding: 8px;
+            margin-top: 4px;
+            margin-bottom: 10px;
+            box-sizing: border-box; /* Ensures padding doesn't affect the width */
+        }
+
+        button {
+            display: block; /* Make button a block to take its own line */
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF; /* Blue background */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        /* Styles for the result and error messages */
+        .result {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .error {
+            text-align: center;
+            margin-top: 10px;
+            color: #dc3545; /* Red color for errors */
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Shape Area Calculator</h1>
+            <p>Enter dimensions below to calculate the area.</p>
+        </header>
+
+        <section class="calculator-card">
+            <h3>Triangle</h3>
+            <label for="a">Side A:</label>
+            <input id="a" type="number" value="5">
+            
+            <label for="b">Side B:</label>
+            <input id="b" type="number" value="10">
+            
+            <label for="c">Side C:</label>
+            <input id="c" type="number" value="11">
+            
+            <button id="calcTriangle">Calculate Triangle Area</button>
+            
+            <div class="result" id="triangleResult"></div>
+            <div class="error" id="triangleError"></div>
+        </section>
+
+        <section class="calculator-card">
+            <h3>Rectangle</h3>
+            <label for="length">Length:</label>
+            <input id="length" type="number" value="70">
+            
+            <label for="width">Width:</label>
+            <input id="width" type="number" value="11">
+
+            <button id="calcRectangle">Calculate Rectangle Area</button>
+
+            <div class="result" id="rectangleResult"></div>
+            <div class="error" id="rectangleError"></div>
+        </section>
+
+        <section class="calculator-card">
+            <h3>Circle</h3>
+            <label for="radius">Radius:</label>
+            <input id="radius" type="number" value="8">
+
+            <button id="calcCircle">Calculate Circle Area</button>
+
+            <div class="result" id="circleResult"></div>
+            <div class="error" id="circleError"></div>
+        </section>
+    </div>
+
+    <script>
+        // --- Helper functions to display messages ---
+        function showResult(elementId, text) {
+            document.getElementById(elementId).textContent = text;
+        }
+
+        function showError(elementId, text) {
+            document.getElementById(elementId).textContent = text;
+        }
+        
+        // --- Triangle Calculation ---
+        document.getElementById('calcTriangle').addEventListener('click', function() {
+            // Get values from input fields and convert them to numbers
+            const a = parseFloat(document.getElementById('a').value);
+            const b = parseFloat(document.getElementById('b').value);
+            const c = parseFloat(document.getElementById('c').value);
+
+            // Clear previous messages
+            showError('triangleError', '');
+            showResult('triangleResult', '');
+
+            // Validation checks
+            if (isNaN(a) || isNaN(b) || isNaN(c)) {
+                showError('triangleError', 'Please enter valid numbers for all sides.');
+                return;
+            }
+            if (a <= 0 || b <= 0 || c <= 0) {
+                showError('triangleError', 'All sides must be positive numbers.');
+                return;
+            }
+            if (a + b <= c || a + c <= b || b + c <= a) {
+                showError('triangleError', 'These sides do not form a valid triangle.');
+                return;
+            }
+
+            // Calculate area using Heron's formula
+            const s = (a + b + c) / 2;
+            const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+
+            // Display the result
+            showResult('triangleResult', 'Area: ' + area.toFixed(2) + ' sq. units');
+        });
+
+        // --- Rectangle Calculation ---
+        document.getElementById('calcRectangle').addEventListener('click', function() {
+            // Get values and convert to numbers
+            const length = parseFloat(document.getElementById('length').value);
+            const width = parseFloat(document.getElementById('width').value);
+
+            // Clear previous messages
+            showError('rectangleError', '');
+            showResult('rectangleResult', '');
+
+            // Validation checks
+            if (isNaN(length) || isNaN(width)) {
+                showError('rectangleError', 'Please enter valid numbers for length and width.');
+                return;
+            }
+            if (length <= 0 || width <= 0) {
+                showError('rectangleError', 'Length and width must be positive numbers.');
+                return;
+            }
+
+            // Calculate and display area
+            const area = length * width;
+            showResult('rectangleResult', 'Area: ' + area.toFixed(2) + ' sq. units');
+        });
+
+        // --- Circle Calculation ---
+        document.getElementById('calcCircle').addEventListener('click', function() {
+            // Get value and convert to number
+            const radius = parseFloat(document.getElementById('radius').value);
+
+            // Clear previous messages
+            showError('circleError', '');
+            showResult('circleResult', '');
+
+            // Validation checks
+            if (isNaN(radius)) {
+                showError('circleError', 'Please enter a valid numeric radius.');
+                return;
+            }
+            if (radius <= 0) {
+                showError('circleError', 'Radius must be a positive number.');
+                return;
+            }
+
+            // Calculate area using πr² and display it
+            const area = Math.PI * radius * radius;
+            showResult('circleResult', 'Area: ' + area.toFixed(2) + ' sq. units');
+        });
+        
+        // --- Optional: Allow Enter key to trigger calculation ---
+        document.getElementById('a').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('calcTriangle').click(); });
+        document.getElementById('b').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('calcTriangle').click(); });
+        document.getElementById('c').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('calcTriangle').click(); });
+        
+        document.getElementById('length').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('calcRectangle').click(); });
+        document.getElementById('width').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('calcRectangle').click(); });
+        
+        document.getElementById('radius').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('calcCircle').click(); });
+
+    </script>
+</body>
+</html>

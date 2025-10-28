@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <h1>Kanad Mukherjee</h1>
+        <h2>Batch :R8 Rollno: 42451</h2>
+        <h1>multiplication table generator</h1>
+    </div>
+    <section class="container">
+        <label for="input">enter a number:</label>
+        <input type="number" id="input" placeholder="enter valid number"><br>
+        <label for="loop-type">select a loop:</label><br>
+        <input type="radio" name="loopType" id="forloop" value="for">
+        <label for="forloop">for</label><br>
+        <input type="radio" name="loopType" id="whileloop" value="while">
+        <label for="whileloop">while</label><br>
+        <input type="radio" name="loopType" id="do-whileloop" value="do-while">
+        <label for="do-whileloop">do-while</label><br>
+        <button id="generateTable">generate table</button>
+        <div class="error" id="multi-error"></div>
+        <pre class="result" id="multi-result"></pre>
+    </section>
+    <script>
+        function showError(elementId,text){
+            document.getElementById(elementId).textContent=text;
+        }
+        function showResult(elementId,text){
+            document.getElementById(elementId).textContent=text;
+        }
+        document.getElementById('generateTable').addEventListener('click',function(){
+            const input = parseFloat(document.getElementById('input').value);
+            const loopType = document.querySelector(`input[name="loopType"]:checked`).value;
+            if(isNaN(input)){
+                showError('multi-error',"enter valid number");
+            }
+            if(input === 0){
+                showResult('multi-result',"multiplication table for 0 is always 0");
+            }
+
+            function Tableresult(){
+            let result = `multiplication table of ${input} is: \n\n`
+            if(loopType == 'for'){
+                for(let i=1;i<=10;i++){
+                    result += `${input} x ${i} = ${input*i}\n`;
+                }
+            }
+            if(loopType == 'while'){
+                let i=1;
+                while(i<=10){
+                    result += `${input} x ${i} = ${input*i}\n`;
+                    i++;
+                }
+            }
+            if(loopType == 'do-while'){
+                let i=1;
+                do{
+                    result += `${input} x ${i} = ${input*i}\n`;
+                    i++;
+                }while(i<=10);
+            }
+            return result;
+            }
+            const tableContent = Tableresult();
+            showResult('multi-result',tableContent)
+        })
+    </script>
+</body>
+</html>

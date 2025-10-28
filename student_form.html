@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Student Registration</title>
+</head>
+<body>
+    <main class="container">
+        <h1>Student Registration</h1>
+        <section class="card" id="formCard">
+            <div id="registrationContainer">
+                <h2>Student Information Form</h2>
+                <div id="formError" class="form-error"></div>
+                <form id="studentForm" novalidate>
+                    <div class="field">
+                        <label for="name">Full Name *</label>
+                        <input id="name" type="text" placeholder="e.g., Anjali Kulkarni" />
+                        <div class="error" id="nameError"></div>
+                    </div><br><br>
+                    <div class="field">
+                        <label for="address">Address *</label>
+                        <textarea id="address" rows="3" placeholder="House no, street, area"></textarea>
+                        <div class="error" id="addressError"></div>
+                    </div><br><br>
+                    <div class="field">
+                        <label for="pincode">Pincode *</label>
+                        <input id="pincode" type="text" maxlength="6" placeholder="6-digit PIN" />
+                        <div class="error" id="pincodeError"></div>
+                    </div><br><br>
+                    <div class="field">
+                        <label for="state">State / UT *</label>
+                        <select id="state">
+                            <option value="">-- Select State / UT --</option>
+                            <option>Maharashtra</option>
+                            <option>Karnataka</option>
+                            <option>Delhi</option>
+                        </select>
+                        <div class="error" id="stateError"></div>
+                    </div><br><br>
+                    <div class="field">
+                        <label for="email">Email ID *</label>
+                        <input id="email" type="email" placeholder="name@example.com" />
+                        <div class="error" id="emailError"></div>
+                    </div><br><br>
+                    <div class="field">
+                        <label for="mobile">Mobile Number *</label>
+                        <input id="mobile" type="tel" maxlength="10" placeholder="10-digit mobile" />
+                        <div class="error" id="mobileError"></div>
+                    </div><br><br>
+                    <div class="field">
+                        <label for="gender">Gender *</label>
+                        <select id="gender">
+                            <option value="">-- Select Gender --</option>
+                            <option>Female</option>
+                            <option>Male</option>
+                            <option>Other</option>
+                        </select>
+                        <div class="error" id="genderError"></div>
+                    </div><br><br>
+                    <div class="actions">
+                        <button type="submit" class="btn primary">Submit</button>
+                        <button type="button" id="resetBtn" class="btn secondary">Reset</button>
+                    </div><br><br>
+                </form>
+            </div>
+            <div id="successContainer" class="success-screen" hidden>
+                <h2 id="successName"></h2>
+                <p>Your student profile has been created successfully.</p>
+                <button id="logoutBtn" class="btn logout-btn">Register Another Student</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Regex patterns
+        const regex = {
+            name: /^[A-Za-z]+(?:\s[A-Za-z]+)*$/,
+            pincode: /^[1-9][0-9]{5}$/,
+            email: /^[A-Za-z][A-Za-z0-9._-]*@[A-Za-z]+(?:\.[A-Za-z]+)+$/,
+            mobile: /^[6-9][0-9]{9}$/
+        };
+
+        // Form elements and their validation rules
+        const fields = [
+            { id: 'name', errorId: 'nameError', regex: regex.name, errorMsg: 'Letters and spaces only.' },
+            { id: 'address', errorId: 'addressError' },
+            { id: 'pincode', errorId: 'pincodeError', regex: regex.pincode, errorMsg: 'Enter a valid 6-digit PIN.' },
+            { id: 'state', errorId: 'stateError' },
+            { id: 'email', errorId: 'emailError', regex: regex.email, errorMsg: 'Enter a valid email address.' },
+            { id: 'mobile', errorId: 'mobileError', regex: regex.mobile, errorMsg: 'Mobile must be 10 digits starting with 6-9.' },
+            { id: 'gender', errorId: 'genderError' }
+        ];
+
+        const form = document.getElementById('studentForm');
+        const formError = document.getElementById('formError');
+        const registration = document.getElementById('registrationContainer');
+        const success = document.getElementById('successContainer');
+
+        // Set error message and style
+        const setError = (el, errorEl, message) => {
+            errorEl.textContent = message || '';
+            el.classList.toggle('invalid', !!message);
+        };
+
+        // Validate a single field
+        const validateField = ({ id, errorId, regex, errorMsg }) => {
+            const el = document.getElementById(id);
+            const errorEl = document.getElementById(errorId);
+            const value = el.value.trim();
+            if (!value) {
+                setError(el, errorEl, `${el.labels[0].textContent.replace(' *', '')} is required`);
+                return false;
+            }
+            if (regex && !regex.test(value)) {
+                setError(el, errorEl, errorMsg);
+                return false;
+            }
+            setError(el, errorEl, '');
+            return true;
+        };
+
+        // Add event listeners for live validation
+        fields.forEach(field => {
+            const el = document.getElementById(field.id);
+            el.addEventListener(field.id === 'state' || field.id === 'gender' ? 'change' : 'input', 
+                () => validateField(field));
+        });
+
+        // Form submission
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            formError.style.display = 'none';
+            const isValid = fields.every(validateField);
+            if (isValid) {
+                registration.hidden = true;
+                success.hidden = false;
+                document.getElementById('successName').textContent = `Congratulations, ${document.getElementById('name').value}!`;
+                document.getElementById('successGender').textContent = document.getElementById('gender').value;
+            } else {
+                formError.textContent = 'Please correct the errors before submitting.';
+                formError.style.display = 'block';
+            }
+        });
+
+        // Reset form
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            form.reset();
+            fields.forEach(field => setError(document.getElementById(field.id), document.getElementById(field.errorId), ''));
+            formError.style.display = 'none';
+            document.getElementById('name').focus();
+        });
+
+        // Register another student
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            form.reset();
+            fields.forEach(field => setError(document.getElementById(field.id), document.getElementById(field.errorId), ''));
+            formError.style.display = 'none';
+            success.hidden = true;
+            registration.hidden = false;
+        });
+    });
+    </script>
+</body>
+</html>

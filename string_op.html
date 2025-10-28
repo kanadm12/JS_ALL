@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <h1>string operations</h1>
+        <section id="palindrome">
+            <h3>palindrome check</h3>
+            <label for="input_string">enter a string:</label>
+            <input type="text" id="input_string" placeholder="e.g., racecar">
+            <button id="palindromeCheck">check if palindrome</button>
+            <div class="error" id="palindromeError"></div>
+            <div class="result" id="palindromeResult"></div>
+        </section>
+        <section id="reverse">
+          <h3>reverse string</h3>
+            <label for="input">enter a string:</label>
+            <input type="text" id="input_string_1" placeholder="e.g., hello world">
+            <button id="reverseBtn">reverse string</button>
+            <div class="error" id="reverseError"></div>
+            <div class="result" id="reverseResult"></div>  
+        </section>
+        <section id="replaceFirstOccurence">
+            <h3>replace first occurence</h3>
+            <label for="originalString">enter original string:</label>
+            <input type="text" id="originalString" placeholder="Enter original string">
+            <label for="toReplace">string to replace:</label>
+            <input type="text" id="toReplace" placeholder="String to replace">
+            <label for="replaceWith">replace with:</label> <!-- Corrected typo in label text -->
+            <input type="text" id="replaceWith" placeholder="Replace with">
+            <button id="replaceFirst">replace first occurence</button>
+            <div class="error" id="replaceError"></div>
+            <div class="result" id="replaceResult"></div>
+        </section>
+        <section id="replaceAllOccurences">
+            <h1>replace all occurences</h1>
+            <label for="originalStringAll">enter original string:</label> <!-- Corrected typo in label text -->
+            <input type="text" id="originalStringAll" placeholder="Enter original string">
+            <label for="toReplaceAll">string to replace:</label>
+            <input type="text" id="toReplaceAll" placeholder="String to replace">
+            <label for="replaceWithAll">replace with:</label>
+            <input type="text" id="replaceWithAll" placeholder="Replace with">
+            <button id="replaceAllBtn">replace all occurences</button>
+            <div class="error" id="replaceAllError"></div>
+            <div class="result" id="replaceAllResult"></div>
+        </section>
+    </div>
+    <script>
+        
+        function showError(elementId,text){
+            document.getElementById(elementId).textContent = text;
+        }
+        function showResult(elementId,text){
+            document.getElementById(elementId).textContent = text;
+        }
+        function showMessage(elementId,text,isError=false){
+            if(isError){
+                showError(elementId,text);
+            } else {
+                showResult(elementId,text);
+            }
+        }
+        function palindromeCheck(str){
+                const cleanedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+                const reversedStr = cleanedStr.split('').reverse().join('');
+                return cleanedStr === reversedStr;
+        }
+
+        function reverseString(str){
+            return str.split('').reverse().join('');
+        }
+
+        function replaceFirstOccurence(original, toReplace, replaceWith){
+            return original.replace(toReplace, replaceWith);
+        }
+
+        function replaceAllOccurences(original, toReplace, replaceWith){
+            return original.replaceAll(toReplace, replaceWith);
+        }
+
+        document.getElementById('palindromeCheck').addEventListener('click',function(){
+            const inputStr = document.getElementById('input_string').value;
+            showMessage('palindromeError', '');
+            showMessage('palindromeResult', '');
+
+            if(inputStr.trim() === ''){
+                showMessage('palindromeError','Please enter a valid string.', true);
+                return;
+            }
+
+            const isPalindrome = palindromeCheck(inputStr);
+            const message = isPalindrome ? `"${inputStr}" is a palindrome.` : `"${inputStr}" is not a palindrome.`;
+            showMessage('palindromeResult', message);
+        });
+
+        document.getElementById('reverseBtn').addEventListener('click',function(){
+            const inputStr = document.getElementById('input_string_1').value;
+            showMessage('reverseError','');
+            showMessage('reverseResult','');
+
+            if(inputStr.trim() === ''){
+                showMessage('reverseError','Please enter a valid string.', true);
+                return;
+            }
+
+            const reversedStr = reverseString(inputStr);
+            showMessage('reverseResult',`Reversed string: ${reversedStr}`);
+        });
+
+        document.getElementById('replaceFirst').addEventListener('click',function(){
+            const originalStr = document.getElementById('originalString').value;
+            const toReplace = document.getElementById('toReplace').value;
+            const replaceWith = document.getElementById('replaceWith').value;
+            showMessage('replaceError','');
+            showMessage('replaceResult','');
+
+            if(originalStr.trim() === '' || toReplace.trim() === ''){
+                showMessage('replaceError','Please enter valid strings.', true);
+                return;
+            }
+
+            const newStr = replaceFirstOccurence(originalStr, toReplace, replaceWith);
+            showMessage('replaceResult',`Resulting string: ${newStr}`);
+        });
+
+        document.getElementById('replaceAllBtn').addEventListener('click',function(){
+            const originalStr = document.getElementById('originalStringAll').value;
+            const toReplace = document.getElementById('toReplaceAll').value;
+            const replaceWith = document.getElementById('replaceWithAll').value; 
+            showMessage('replaceAllError','');
+            showMessage('replaceAllResult','');
+
+            if(originalStr.trim() === '' || toReplace.trim() === ''){
+                showMessage('replaceAllError','Please enter valid strings.', true);
+                return;
+            }
+            const newStr = replaceAllOccurences(originalStr, toReplace, replaceWith);
+            showMessage('replaceAllResult',`Resulting string: ${newStr}`);
+        });
+        
+    </script>
+</body>
+</html>

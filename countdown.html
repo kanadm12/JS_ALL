@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <h1>countdown timer</h1>
+        <label for="input">select valid date and time:</label><br>
+        <input type="datetime-local" id="targetDate"><br>
+        <button id="startBtn">Start Countdown</button><br>
+        <div id="countdownTimer"></div>
+    </div>
+    <script>
+        const targetDateInput = document.getElementById('targetDate');
+        const startBtn = document.getElementById('startBtn');
+        const countdownTimer = document.getElementById('countdownTimer');
+
+        let countdownInterval;
+        startBtn.addEventListener('click', function() {
+            clearInterval(countdownInterval);
+            const targetDate = new Date(targetDateInput.value).getTime();
+            const now = new Date().getTime();
+            if (targetDate <= now) {
+                countdownTimer.textContent = 'Please select a future date and time.';
+                return;
+            }
+            countdownInterval = setInterval(function() {
+                const timeLeft = targetDate - new Date().getTime();
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownTimer.textContent = 'Countdown finished!';
+                    return;
+                }
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                countdownTimer.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s remaining`;
+            }, 1000);
+        });
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <h1>String Comparison</h1>
+    </div>
+    <div class="stringCompare">
+        <h3>enter strings to compare:</h3>
+        <label for="str1">enter first string:</label><br>
+        <input type="text" id="str1"><br><br>
+        <label for="str2">enter second string:</label><br>
+        <input type="text" id="str2"><br><br>
+        <button id="lengthCompare">compare lengths</button>
+        <button id="looseCompare">loose Comparison</button>
+        <button id="strictCompare">strict comparison</button>
+        <button id="localeCompare">locale Comparison</button>
+        <div class="result" id="compareResult"></div>
+    </div>
+    <script>
+        function showResult(id, text) {
+            document.getElementById(id).textContent = text;
+        }
+
+        function clearResult() {
+            showResult('compareResult', '');
+        }
+
+        function parseValue(str){
+            let trimmed = str.trim();
+            if((trimmed.startsWith('"') && trimmed.endsWith('"')) || (trimmed.startsWith("'") && trimmed.endsWith("'"))){
+                return trimmed.slice(1,-1);
+            }
+            if(trimmed !== '' && !isNaN(Number(trimmed)) && String(Number(trimmed)) === trimmed){
+                return Number(trimmed);
+            }
+            return trimmed;
+        }
+
+        document.getElementById('lengthCompare').addEventListener('click',function(){
+            clearResult();
+            const str1 = document.getElementById('str1').value;
+            const str2 = document.getElementById('str2').value;
+            if(str1.trim() === '' || str2.trim() === ''){
+                showResult('compareResult','Please enter both strings.');
+                return;
+            }
+            const equal = str1.length==str2.length;
+            if(equal){
+                showResult('compareResult','Lengths are equal: '+str1.length);
+            } else {
+                showResult('compareResult','Lengths are unequal: '+str1.length+' ≠ '+str2.length);
+            }
+        })
+
+        document.getElementById('looseCompare').addEventListener('click',function(){
+            clearResult();
+            let str1 = document.getElementById('str1').value;
+            let str2 = document.getElementById('str2').value;
+            if(str1.trim()===''||str2.trim()===''){
+                showResult('compareResult','Please enter both values.');
+                return;
+            }
+            let v1 = parseValue(str1);
+            let v2 = parseValue(str2);
+            let equal = v1==v2;
+            if(equal){
+                showResult('compareResult',v1+' == '+v2+' → true (loose)');
+            } else {
+                showResult('compareResult',v1+' == '+v2+' → false (loose)');
+            }
+        })
+
+        document.getElementById('strictCompare').addEventListener('click',function(){
+            clearResult();
+            let str1 = document.getElementById('str1').value;
+            let str2 = document.getElementById('str2').value;
+            if(str1.trim()===''||str2.trim()===''){
+                showResult('compareResult','Please enter both values.');
+                return;
+            }
+            let v1 = parseValue(str1);
+            let v2 = parseValue(str2);
+
+            let equal = v1===v2;
+            if(equal){
+                showResult('compareResult',v1+' === '+v2+' → true (strict)');
+            } else {
+                showResult('compareResult',v1+' === '+v2+' → false (strict)');
+            }
+        })
+
+        document.getElementById('localeCompare').addEventListener('click',function(){
+            clearResult();
+            let str1 = document.getElementById('str1').value;
+            let str2 = document.getElementById('str2').value;
+            if(str1.trim()===''||str2.trim()===''){
+                showResult('compareResult','Please enter both values.');
+                return;
+            }
+            const local = str1.localeCompare(str2);
+            if(local===0){
+                showResult('compareResult','Strings are equal (locale)');
+            }else{
+                showResult('compareResult','strings are unequal (locale)');
+            }
+        })
+
+
+    </script>
+</body>
+</html>

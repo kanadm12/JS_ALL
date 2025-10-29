@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Array of Objects Operations</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Array of Objects Operations</h1>
+        
+        <div class="control-group">
+            <label for="arraySize">Array Size:</label>
+            <input type="number" id="arraySize" min="1" value="3" />
+            <button onclick="generateObjectInputs()">Set Size</button>
+        </div>
+        
+        <form id="objectInputs"></form>
+        
+        <div class="control-group">
+            <button onclick="setObjectArray()">Create Array From Inputs</button>
+        </div>
+        
+        <hr />
+        
+        <div class="control-group">
+            <label for="checkIndex">Is element at index an array?</label>
+            <input type="number" id="checkIndex" min="0" value="0" />
+            <button onclick="checkIfArray()">Check</button>
+            <span id="checkArrayResult" class="result-span"></span>
+        </div>
+        
+        <div class="control-group">
+            <label for="removeIndex">Remove element at index:</label>
+            <input type="number" id="removeIndex" min="0" value="0" />
+            <button onclick="removeAtIndex()">Remove</button>
+            <span id="removeMsg" class="result-span"></span>
+        </div>
+        
+        <hr />
+        
+        <div id="objectArrayDisplay"></div>
+    </div>
+
+    <script>
+        let objectArray = [];
+
+        // Generates the input fields based on the chosen array size
+        function generateObjectInputs() {
+            const size = parseInt(document.getElementById('arraySize').value, 10);
+            const container = document.getElementById('objectInputs');
+            container.innerHTML = ''; // Clear previous inputs
+            for (let i = 0; i < size; i++) {
+                container.innerHTML += `
+                    <div class="control-group">
+                        <label>Element ${i}:</label>
+                        <input type="text" id="element${i}" placeholder='e.g., 123, "hello", [1,2], {"a":1}'>
+                    </div>`;
+            }
+        }
+
+        // Creates the main array from the values in the input fields
+        function setObjectArray() {
+            const size = parseInt(document.getElementById('arraySize').value, 10);
+            objectArray = [];
+            for (let i = 0; i < size; i++) {
+                const val = document.getElementById(`element${i}`).value.trim();
+                if (val === '') {
+                    objectArray.push(null); // Treat empty inputs as null
+                } else {
+                    try {
+                        // Try to parse the input as JSON (for arrays, objects, numbers, booleans)
+                        objectArray.push(JSON.parse(val));
+                    } catch (e) {
+                        // If it's not valid JSON, treat it as a plain string
+                        objectArray.push(val);
+                    }
+                }
+            }
+            displayObjectArray();
+            document.getElementById('checkArrayResult').textContent = '';
+            document.getElementById('removeMsg').textContent = '';
+        }
+
+        // Displays the current state of the array on the page
+        function displayObjectArray() {
+            document.getElementById('objectArrayDisplay').textContent =
+                "Current Array: " + JSON.stringify(objectArray, null, 2);
+        }
+
+        // Checks if the element at a given index is an array
+        function checkIfArray() {
+            const idx = parseInt(document.getElementById('checkIndex').value, 10);
+            const resultSpan = document.getElementById('checkArrayResult');
+            
+            if (idx >= 0 && idx < objectArray.length) {
+                resultSpan.textContent = Array.isArray(objectArray[idx]) ? "Yes, it is an array." : "No, it is not an array.";
+            } else {
+                resultSpan.textContent = "Invalid index.";
+            }
+            displayObjectArray();
+        }
+
+        // Removes an element from the array at a specific index
+        function removeAtIndex() {
+            const idx = parseInt(document.getElementById('removeIndex').value, 10);
+            const removeMsgSpan = document.getElementById('removeMsg');
+
+            if (idx >= 0 && idx < objectArray.length) {
+                objectArray.splice(idx, 1);
+                removeMsgSpan.textContent = `Element at index ${idx} removed.`;
+            } else {
+                removeMsgSpan.textContent = 'Invalid index.';
+            }
+            displayObjectArray();
+        }
+
+        // Generate the initial input fields when the page loads
+        window.onload = generateObjectInputs;
+    </script>
+</body>
+</html>

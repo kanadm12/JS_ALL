@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Array Operations</title>
+</head>
+<body>
+  <h1>Array Operations</h1>
+
+  <div id="arrayDisplay">Current Array: [] (Size: 0)</div>
+
+  <section>
+    <h3>Set Array Size</h3>
+    <input type="number" id="setSize" placeholder="Enter array size">
+    <button id="setSizeBtn">Set Size</button>
+    <p id="sizeMsg"></p>
+  </section>
+
+  <section>
+    <h3>Add Element</h3>
+    <input type="text" id="addElementInput" placeholder="Element to add">
+    <button id="addElementBtn">Add</button>
+    <p id="addMsg"></p>
+  </section>
+
+  <section>
+    <h3>Remove Element</h3>
+    <input type="text" id="removeElementInput" placeholder="Element to remove">
+    <button id="removeElementBtn">Remove</button>
+    <p id="removeMsg"></p>
+  </section>
+
+  <section>
+    <h3>Empty Array</h3>
+    <button id="emptyArrayBtn">Empty</button>
+    <p id="emptyMsg"></p>
+  </section>
+
+  <script>
+    let arr = [];
+
+    function parseValue(value) {
+      value = value.trim();
+      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+        return value.slice(1, -1);
+      }
+      const num = Number(value);
+      return !isNaN(num) && value !== '' ? num : value;
+    }
+
+    function updateDisplay() {
+      const display = document.getElementById('arrayDisplay');
+      display.textContent = `Current Array: [${arr.map(x => JSON.stringify(x)).join(', ')}] (Size: ${arr.length})`;
+    }
+
+    document.getElementById('setSizeBtn').onclick = function() {
+      const size = parseInt(document.getElementById('setSize').value);
+      const msg = document.getElementById('sizeMsg');
+      if (isNaN(size) || size < 0) {
+        msg.textContent = 'Please enter a valid non-negative size.';
+        return;
+      }
+      arr = new Array(size).fill(undefined);
+      msg.textContent = `Array capacity set to ${size}.`;
+      updateDisplay();
+    };
+
+    document.getElementById('addElementBtn').onclick = function() {
+      const value = parseValue(document.getElementById('addElementInput').value);
+      const msg = document.getElementById('addMsg');
+      const emptyIndex = arr.indexOf(undefined);
+
+      if (emptyIndex === -1) {
+        msg.textContent = 'Array is full. Cannot add more elements.';
+      } else {
+        arr[emptyIndex] = value;
+        msg.textContent = `Added ${JSON.stringify(value)}.`;
+        updateDisplay();
+      }
+    };
+
+    document.getElementById('removeElementBtn').onclick = function() {
+      const value = parseValue(document.getElementById('removeElementInput').value);
+      const msg = document.getElementById('removeMsg');
+      const index = arr.indexOf(value);
+
+      if (index === -1) {
+        msg.textContent = `${JSON.stringify(value)} not found in array.`;
+      } else {
+        arr.splice(index, 1);
+        arr.push(undefined);
+        msg.textContent = `Removed ${JSON.stringify(value)}.`;
+        updateDisplay();
+      }
+    };
+
+    document.getElementById('emptyArrayBtn').onclick = function() {
+      const msg = document.getElementById('emptyMsg');
+      arr.fill(undefined);
+      msg.textContent = 'Array has been emptied.';
+      updateDisplay();
+    };
+  </script>
+</body>
+</html>
